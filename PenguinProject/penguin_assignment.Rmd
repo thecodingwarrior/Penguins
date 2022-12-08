@@ -1,0 +1,79 @@
+---
+title: "Penguins_assignment"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Set working directory:
+
+Setwd("~PenguinProject")
+```{r}
+setwd("~/PenguinProject")
+source("Functions/libraries.R")
+source("Functions/cleaning_function.R")
+source("Functions/plotting.R")
+
+```
+
+*Statistical test: Fit a linear regression model between body mass and flipper length*
+
+Generate the dataset required
+
+Cleaning the data set to clean column names, remove empty rows, remove columns called comment and delta 
+```{r}
+penguins_clean <- cleaning(penguins_raw)
+head(penguins_clean)
+```
+
+Creating the dataset to only include flipper length, species and body mass and to remove missing data points- this will be the dataset used to make the figure
+```{r}
+dataset2<- bodymass_flipperlength_species(penguins_clean)
+head(dataset2)
+```
+
+*Fit a linear model for flipper length as a function of body mass*
+```{r}
+simple.fit = lm(flipper_length_mm  ~ body_mass_g, data = dataset2)
+summary(simple.fit)
+
+```
+The  p value (2.2e-16) indicates that there is a significant positive relationship between flipper length and body mass (p value < 0.001). R^2 = 0.76, which is close to 1- this means a large proportion of the variance in the response variable can be explained by the predictor variables.
+
+*Check it fits the assumptions of normality*
+```{r}
+plot(simple.fit,2)
+```
+The data does not violate the assumptions of normality as the points in the Q-Q plot  lie on a straight diagonal line, with minimal deviations. Therefore this is an appropriate statistical test to use. 
+*Generating a figure to demonstrate the linear model*
+```{r}
+linearmodel<-lm_bodymass_flipperlength(dataset2)
+linearmodel
+```
+
+*Saving as a PNG/SVG file*
+Publication figure
+```{r}
+save_plot_png(dataset2, "Figures/figure1_report.png", width = 20, height = 15, res=600,
+        scaling =0.75 )
+```
+
+Powerpoint figure
+```{r}
+save_plot_png(dataset2, "Figures/figure1_powerpoint.png", 
+                      width = 20, height = 18, res = 600, scaling = 1)
+```
+
+Poster figure
+```{r}
+save_plot_png(dataset2, "Figures/figure1_poster.png", 
+                      width = 40, height = 30, res = 600, scaling = 1.7)
+```
+
+vector images (SVG)
+```{r}
+save_plot_svg(dataset2, "Figures/figure1_vector.svg", 
+                      height = 15, width = 20, scaling = 0.8)
+```
